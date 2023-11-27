@@ -1,247 +1,194 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 
-// import usersFromServer from './api/users';
-// import categoriesFromServer from './api/categories';
-// import productsFromServer from './api/products';
+import categoriesFromServer from './api/categories';
+import productsFromServer from './api/products';
+import usersFromServer from './api/users';
+import { CategoryFilter } from './components/Filters/CategoryFilter';
+import { QueryFilter } from './components/Filters/QueryFilter/QueryFilter';
+import { ResetFilters } from './components/Filters/ResetFilters/ResetFilters';
+import { UserFilter } from './components/Filters/UserFilter/UserFilter';
+import { ProductTable } from './components/ProductTable/ProductTable';
 
-// const products = productsFromServer.map((product) => {
-//   const category = null; // find by product.categoryId
-//   const user = null; // find by category.ownerId
+const products = productsFromServer.map((product) => {
+  const category = categoriesFromServer
+    .find(cat => cat.id === product.categoryId);
+  const user = usersFromServer
+    .find(u => u.id === category.ownerId);
 
-//   return null;
-// });
+  return {
+    ...product,
+    category,
+    user,
+  };
+});
 
-export const App = () => (
-  <div className="section">
-    <div className="container">
-      <h1 className="title">Product Categories</h1>
+export const App = () => {
+  const [selectedOwner, setSelectedOwner] = useState(0);
+  const [productNameQuery, setProductNameQuery] = useState('');
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedSortingMethod, setSelectedSortingMethod] = useState('');
+  const [sortBy, setSortBy] = useState('');
 
-      <div className="block">
-        <nav className="panel">
-          <p className="panel-heading">Filters</p>
+  const getFilteredProducts = (rawproducts) => {
+    let viewProducts = [...rawproducts];
 
-          <p className="panel-tabs has-text-weight-bold">
-            <a
-              data-cy="FilterAllUsers"
-              href="#/"
-            >
-              All
-            </a>
+    if (selectedOwner !== 0) {
+      viewProducts = viewProducts
+        .filter(product => product.user.id === selectedOwner);
+    }
 
-            <a
-              data-cy="FilterUser"
-              href="#/"
-            >
-              User 1
-            </a>
+    if (selectedCategories.length !== 0) {
+      viewProducts = viewProducts
+        .filter(product => selectedCategories.includes(product.category.title));
+    }
 
-            <a
-              data-cy="FilterUser"
-              href="#/"
-              className="is-active"
-            >
-              User 2
-            </a>
+    if (productNameQuery) {
+      viewProducts = viewProducts
+        .filter(product => product.name.toLowerCase().includes(
+          productNameQuery.toLowerCase(),
+        ));
+    }
 
-            <a
-              data-cy="FilterUser"
-              href="#/"
-            >
-              User 3
-            </a>
-          </p>
+    if (sortBy && selectedSortingMethod) {
+      viewProducts.sort((a, b) => {
+        let res = 0;
 
-          <div className="panel-block">
-            <p className="control has-icons-left has-icons-right">
-              <input
-                data-cy="SearchField"
-                type="text"
-                className="input"
-                placeholder="Search"
-                value="qwe"
-              />
+        switch (sortBy) {
+          case 'id':
+            res = a.id - b.id;
+            break;
 
-              <span className="icon is-left">
-                <i className="fas fa-search" aria-hidden="true" />
-              </span>
+          case 'product':
+            res = a.name.localeCompare(b.name);
+            break;
 
-              <span className="icon is-right">
-                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                <button
-                  data-cy="ClearButton"
-                  type="button"
-                  className="delete"
-                />
-              </span>
-            </p>
-          </div>
+          case 'category':
+            res = a.category.title.localeCompare(b.category.title);
+            break;
 
-          <div className="panel-block is-flex-wrap-wrap">
-            <a
-              href="#/"
-              data-cy="AllCategories"
-              className="button is-success mr-6 is-outlined"
-            >
-              All
-            </a>
+          case 'user':
+            res = a.user.name.localeCompare(b.user.name);
+            break;
 
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1 is-info"
-              href="#/"
-            >
-              Category 1
-            </a>
+          default:
+            break;
+        }
 
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1"
-              href="#/"
-            >
-              Category 2
-            </a>
+        if (selectedSortingMethod === 'desc') {
+          res *= -1;
+        }
 
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1 is-info"
-              href="#/"
-            >
-              Category 3
-            </a>
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1"
-              href="#/"
-            >
-              Category 4
-            </a>
-          </div>
+        return res;
+      });
+    }
 
-          <div className="panel-block">
-            <a
-              data-cy="ResetAllButton"
-              href="#/"
-              className="button is-link is-outlined is-fullwidth"
-            >
-              Reset all filters
-            </a>
-          </div>
-        </nav>
-      </div>
+    return viewProducts;
+  };
 
-      <div className="box table-container">
-        <p data-cy="NoMatchingMessage">
-          No products matching selected criteria
-        </p>
+  const handleChangingOwnerFilter = id => setSelectedOwner(id);
 
-        <table
-          data-cy="ProductTable"
-          className="table is-striped is-narrow is-fullwidth"
-        >
-          <thead>
-            <tr>
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  ID
+  const handleSelectingCategory = (categoryName) => {
+    if (selectedCategories.includes(categoryName)) {
+      setSelectedCategories(
+        selectedCategories.filter(category => category !== categoryName),
+      );
+    } else {
+      setSelectedCategories([
+        ...selectedCategories,
+        categoryName,
+      ]);
+    }
+  };
 
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort" />
-                    </span>
-                  </a>
-                </span>
-              </th>
+  const handleChangeSortingMethod = (field) => {
+    if (sortBy !== field) {
+      setSortBy(field);
+      setSelectedSortingMethod('asc');
 
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  Product
+      return;
+    }
 
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort-down" />
-                    </span>
-                  </a>
-                </span>
-              </th>
+    switch (selectedSortingMethod) {
+      case '':
+        setSelectedSortingMethod('asc');
+        break;
 
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  Category
+      case 'asc':
+        setSelectedSortingMethod('desc');
+        break;
 
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort-up" />
-                    </span>
-                  </a>
-                </span>
-              </th>
+      case 'desc':
+        setSelectedSortingMethod('');
+        setSortBy('');
+        break;
 
-              <th>
-                <span className="is-flex is-flex-wrap-nowrap">
-                  User
+      default:
+        break;
+    }
+  };
 
-                  <a href="#/">
-                    <span className="icon">
-                      <i data-cy="SortIcon" className="fas fa-sort" />
-                    </span>
-                  </a>
-                </span>
-              </th>
-            </tr>
-          </thead>
+  const checkSortingMethod = (field) => {
+    if (field !== sortBy) {
+      return 'fa-sort';
+    }
 
-          <tbody>
-            <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                1
-              </td>
+    if (selectedSortingMethod === 'asc') {
+      return 'fa-sort-up';
+    }
 
-              <td data-cy="ProductName">Milk</td>
-              <td data-cy="ProductCategory">🍺 - Drinks</td>
+    return 'fa-sort-down';
+  };
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-link"
-              >
-                Max
-              </td>
-            </tr>
+  const resetAllFilters = () => {
+    setSelectedOwner(0);
+    setProductNameQuery('');
+    setSelectedCategories([]);
+    setSelectedSortingMethod('');
+    setSortBy('');
+  };
 
-            <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                2
-              </td>
+  const productsToView = getFilteredProducts(products);
+  const columns = ['ID', 'Product', 'Category', 'User'];
 
-              <td data-cy="ProductName">Bread</td>
-              <td data-cy="ProductCategory">🍞 - Grocery</td>
+  return (
+    <div className="section">
+      <div className="container">
+        <h1 className="title">Product Categories</h1>
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-danger"
-              >
-                Anna
-              </td>
-            </tr>
+        <div className="block">
+          <nav className="panel">
+            <p className="panel-heading">Filters</p>
 
-            <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                3
-              </td>
+            <UserFilter
+              selectedOwner={selectedOwner}
+              handleChangingOwnerFilter={handleChangingOwnerFilter}
+              usersFromServer={usersFromServer}
+            />
 
-              <td data-cy="ProductName">iPhone</td>
-              <td data-cy="ProductCategory">💻 - Electronics</td>
+            <QueryFilter
+              productNameQuery={productNameQuery}
+              setProductNameQuery={setProductNameQuery}
+            />
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-link"
-              >
-                Roma
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <CategoryFilter
+              selectedCategories={selectedCategories}
+              setSelectedCategories={setSelectedCategories}
+              handleSelectingCategory={handleSelectingCategory}
+              categoriesFromServer={categoriesFromServer}
+            />
+
+            <ResetFilters resetAllFilters={resetAllFilters} />
+          </nav>
+        </div>
+
+        <ProductTable
+          productsToView={productsToView}
+          columns={columns}
+          handleChangeSortingMethod={handleChangeSortingMethod}
+          checkSortingMethod={checkSortingMethod}
+        />
       </div>
     </div>
-  </div>
-);
+  );
+};
