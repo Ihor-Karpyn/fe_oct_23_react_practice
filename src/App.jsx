@@ -81,6 +81,7 @@ export const App = () => {
               >
                 All
               </a>
+
               {usersFromServer.map(user => (
                 <a
                   className={cn({ 'is-active': productOwner === user.name })}
@@ -161,7 +162,9 @@ export const App = () => {
           </nav>
         </div>
 
-        <ProductTable filteredGoodsList={filteredGoodsList} />
+        <ProductTable
+          filteredGoodsList={filteredGoodsList}
+        />
       </div>
     </div>
 
