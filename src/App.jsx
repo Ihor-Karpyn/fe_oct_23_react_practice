@@ -31,9 +31,9 @@ const filteredGoods = (productList,
       .includes(inputQuery.toLowerCase()));
   }
 
-  if (selectedCategory) {
-    filteredProducts = filteredProducts.filter(good => good.categorie.title
-      === selectedCategory);
+  if (selectedCategory.length > 0) {
+    filteredProducts = filteredProducts
+      .filter(good => selectedCategory.includes(good.categorie.title));
   }
 
   if (productOwner) {
@@ -46,7 +46,7 @@ const filteredGoods = (productList,
 
 export const App = () => {
   const [inputQuery, setInputQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState([]);
   const [productOwner, setProductOwner] = useState(null);
 
   const handleQueryChange = (event) => {
@@ -55,7 +55,7 @@ export const App = () => {
 
   const handleReset = () => {
     setInputQuery('');
-    setSelectedCategory(null);
+    setSelectedCategory([]);
     setProductOwner(null);
   };
 
@@ -130,7 +130,7 @@ export const App = () => {
                 className={cn('button is-success mr-6', {
                   'is-outlined': selectedCategory,
                 })}
-                onClick={() => setSelectedCategory(null)}
+                onClick={() => setSelectedCategory([])}
               >
                 All
               </a>
@@ -138,11 +138,13 @@ export const App = () => {
                 <a
                   data-cy="Category"
                   className={cn('button mr-2 my-1', {
-                    'is-info': selectedCategory === category.title,
+                    'is-info': selectedCategory.includes(category.title),
                   })}
                   href="#/"
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.title)}
+                  onClick={() => setSelectedCategory(
+                    [...selectedCategory, category.title],
+                  )}
                 >
                   {category.title}
                 </a>
