@@ -1,8 +1,8 @@
 # React Product Categories Practice
 
-> Here is [the working version](https://mate-academy.github.io/react_product-categories-practice/)
+> Here is [the working version](https://mate-academy.github.io/react_product-categories-pnpm startractice/)
 
-You are given a markup for a table of products and 3 arrays. 
+You are given a markup for a table of products and 3 arrays.
 Implement as many options below as you can:
 
 1. Render products in a table with id, name, category, and owner (user).
