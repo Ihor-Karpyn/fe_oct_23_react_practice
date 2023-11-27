@@ -71,6 +71,12 @@ export const App = () => {
     setSearchQuery(query);
   };
 
+  const resetAllFilters = () => {
+    setFilterType('');
+    setFilterValue('');
+    setSearchQuery('');
+  };
+
   const productsToRender = prepearedProducts(
     products,
     filterType,
@@ -160,6 +166,7 @@ export const App = () => {
                   data-cy="ResetAllButton"
                   href="#/"
                   className="button is-link is-outlined is-fullwidth"
+                  onClick={() => resetAllFilters()}
                 >
                   Reset all filters
                 </a>
