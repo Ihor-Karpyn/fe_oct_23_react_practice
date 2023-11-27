@@ -97,6 +97,7 @@ export const App = () => {
               <UserTabs
                 users={users}
                 onFilter={selectedUserId => onUserFilter(selectedUserId)}
+                filterValue={filterValue}
               />
 
               <div className="panel-block">
