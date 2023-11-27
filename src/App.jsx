@@ -6,7 +6,6 @@ import "./App.scss";
 import usersFromServer from "./api/users";
 import categoriesFromServer from "./api/categories";
 import productsFromServer from "./api/products";
-import { eventNames } from "process";
 
 function getUserById(userId) {
   return usersFromServer.find(user => user.id === userId);
@@ -59,6 +58,8 @@ export const App = () => {
   const handleUserSelect = user => setSelectedUser(user);
   const resetUserSelect = () => setSelectedUser(null);
 
+  const resetQuery = () => setQuery('');
+
   const readyProducts = getProductsFiltered(
     completedProducts, selectedUser, query,
   );
@@ -109,6 +110,7 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
+                  value={query}
                   onChange={event => prepareQuery(event.target.value)}
                 />
 
@@ -116,14 +118,18 @@ export const App = () => {
                   <i className="fas fa-search" aria-hidden="true" />
                 </span>
 
-                <span className="icon is-right">
-                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
-                </span>
+                {query && (
+                  <span className="icon is-right">
+                    {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => resetQuery()}
+                    />
+                  </span>
+                )
+                }
               </p>
             </div>
 
