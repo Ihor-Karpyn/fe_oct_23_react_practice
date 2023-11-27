@@ -5,6 +5,7 @@ import './App.scss';
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
+import { ProductTable } from './components/ProductTable/ProductTable';
 
 const products = productsFromServer.map((product) => {
   const category = categoriesFromServer
@@ -23,25 +24,24 @@ const filteredGoods = (productList,
   {
     inputQuery, selectedCategory, productOwner,
   }) => {
-  let filtered = [...productList];
-  console.log(filtered);
-  console.log(inputQuery);
+  let filteredProducts = [...productList];
 
   if (inputQuery) {
-    filtered = filtered.filter(good => good.name.toLowerCase()
+    filteredProducts = filteredProducts.filter(good => good.name.toLowerCase()
       .includes(inputQuery.toLowerCase()));
   }
 
   if (selectedCategory) {
-    filtered = filtered.filter(good => good.categorie.title
+    filteredProducts = filteredProducts.filter(good => good.categorie.title
       === selectedCategory);
   }
 
   if (productOwner) {
-    filtered = filtered.filter(good => good.owner.name === productOwner);
+    filteredProducts = filteredProducts
+      .filter(good => good.owner.name === productOwner);
   }
 
-  return filtered;
+  return filteredProducts;
 };
 
 export const App = () => {
@@ -61,8 +61,6 @@ export const App = () => {
 
   const filteredGoodsList = filteredGoods(products,
     { inputQuery, selectedCategory, productOwner });
-
-  console.log(filteredGoodsList);
 
   return (
     <div className="section">
@@ -163,94 +161,7 @@ export const App = () => {
           </nav>
         </div>
 
-        <div className="box table-container">
-          <table
-            data-cy="ProductTable"
-            className="table is-striped is-narrow is-fullwidth"
-          >
-            <thead>
-              <tr>
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    ID
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Product
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-down" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    Category
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort-up" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-
-                <th>
-                  <span className="is-flex is-flex-wrap-nowrap">
-                    User
-
-                    <a href="#/">
-                      <span className="icon">
-                        <i data-cy="SortIcon" className="fas fa-sort" />
-                      </span>
-                    </a>
-                  </span>
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filteredGoodsList.map(product => (
-                <tr key={product.id} data-cy="Product">
-                  <td className="has-text-weight-bold" data-cy="ProductId">
-                    {product.id}
-                  </td>
-
-                  <td data-cy="ProductName">{product.name}</td>
-                  <td data-cy="ProductCategory">
-                    {`${product.categorie.icon} - ${product.categorie.title}`}
-                  </td>
-
-                  <td
-                    data-cy="ProductUser"
-                    className={cn({
-                      'has-text-link': product.owner.sex === 'm',
-                      'has-text-danger': product.owner.sex === 'f',
-                    })}
-                  >
-                    {product.owner.name}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-            {!filteredGoodsList.length && (
-              <p data-cy="NoMatchingMessage">
-                No products matching selected criteria
-              </p>
-            )}
-          </table>
-        </div>
+        <ProductTable filteredGoodsList={filteredGoodsList} />
       </div>
     </div>
 
