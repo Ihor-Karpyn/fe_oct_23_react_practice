@@ -12,10 +12,10 @@ Implement as many options below as you can:
     - If a user is selected it should be highlighted with the `is-active` class;
     - Show only products of a selected user;
     - Select `All` to see all the products. -->
-1. Use the `input` to filter products by name.
+<!-- 1. Use the `input` to filter products by name.
     - Show only products having the input value in their name ignoring the case;
     - The `x` button should appear only when the value is not empty;
-    - Clear the value after the `x` button click.
+    - Clear the value after the `x` button click. -->
 1. Show a `No results` message if there are no products matching the current criteria
     - `Reset All Filters` button should clear all the filters.
 1. (*) Allow to select several categories:
