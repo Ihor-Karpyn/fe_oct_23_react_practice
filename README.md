@@ -5,13 +5,13 @@
 You are given a markup for a table of products and 3 arrays.
 Implement as many options below as you can:
 
-1. Render products in a table with id, name, category, and owner (user).
+<!-- 1. Render products in a table with id, name, category, and owner (user).
     - category should render its icon before the title;
-    - owner names should be colored with `has-text-link` for men and `has-text-danger` for women.
-1. Implement the ability to filter products by owner:
+    - owner names should be colored with `has-text-link` for men and `has-text-danger` for women. -->
+<!-- 1. Implement the ability to filter products by owner:
     - If a user is selected it should be highlighted with the `is-active` class;
     - Show only products of a selected user;
-    - Select `All` to see all the products.
+    - Select `All` to see all the products. -->
 1. Use the `input` to filter products by name.
     - Show only products having the input value in their name ignoring the case;
     - The `x` button should appear only when the value is not empty;

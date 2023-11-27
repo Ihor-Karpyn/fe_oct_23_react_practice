@@ -6,6 +6,7 @@ import "./App.scss";
 import usersFromServer from "./api/users";
 import categoriesFromServer from "./api/categories";
 import productsFromServer from "./api/products";
+import { eventNames } from "process";
 
 function getUserById(userId) {
   return usersFromServer.find(user => user.id === userId);
@@ -27,7 +28,7 @@ const completedProducts = productsFromServer.map(product => ({
 //   </p>
 // );
 
-function getProductsFiltered(inputProducts, selectedUser) {
+function getProductsFiltered(inputProducts, selectedUser, query) {
   let filteredProducts = [...inputProducts];
 
   if (selectedUser) {
@@ -36,15 +37,31 @@ function getProductsFiltered(inputProducts, selectedUser) {
     );
   }
 
+  if (query) {
+    filteredProducts = filteredProducts.filter(
+      product => product.name.toLowerCase().includes(query),
+    );
+  }
+
   return filteredProducts;
 }
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [query, setQuery] = useState('');
+
+  const prepareQuery = (inputQuery) => {
+    const pureQuery = inputQuery.trim().toLowerCase();
+
+    setQuery(pureQuery);
+  };
+
   const handleUserSelect = user => setSelectedUser(user);
   const resetUserSelect = () => setSelectedUser(null);
 
-  const readyProducts = getProductsFiltered(completedProducts, selectedUser);
+  const readyProducts = getProductsFiltered(
+    completedProducts, selectedUser, query,
+  );
 
   return (
     <div className="section">
@@ -59,6 +76,11 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
+                className={
+                  selectedUser === null
+                    ? 'is-active'
+                    : ''
+                }
                 onClick={() => resetUserSelect()}
               >
                 All
@@ -87,7 +109,7 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value=""
+                  onChange={event => prepareQuery(event.target.value)}
                 />
 
                 <span className="icon is-left">
