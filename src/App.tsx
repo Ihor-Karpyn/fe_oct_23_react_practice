@@ -68,6 +68,25 @@ export const App: FC = () => {
     setSortColumn(null);
   };
 
+  const toggleSelectCategory = (categoryId: number) => {
+    const isExist = selectedCategoriesIds.includes(categoryId);
+
+    if (isExist) {
+      setSelectedCategoriesIds(
+        selectedCategoriesIds.filter(id => id !== categoryId),
+      );
+
+      return;
+    }
+
+    setSelectedCategoriesIds([
+      ...selectedCategoriesIds,
+      categoryId,
+    ]);
+  };
+
+  const clearSelectedCategories = () => setSelectedCategoriesIds([]);
+
   return (
     <div className="section">
       <div className="container">
@@ -82,7 +101,8 @@ export const App: FC = () => {
           clearAllFilters={clearAllFilters}
           categories={categoriesFromServer}
           selectedCategoriesIds={selectedCategoriesIds}
-          setSelectedCategoriesIds={setSelectedCategoriesIds}
+          toggleSelectCategory={toggleSelectCategory}
+          clearSelectedCategories={clearSelectedCategories}
         />
 
         <div className="box table-container">

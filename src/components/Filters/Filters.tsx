@@ -13,7 +13,8 @@ interface Props {
   clearAllFilters: () => void;
   categories: Category[];
   selectedCategoriesIds: number[];
-  setSelectedCategoriesIds: (ids: number[]) => void;
+  toggleSelectCategory: (id: number) => void;
+  clearSelectedCategories: () => void;
 }
 
 export const Filters: FC<Props> = (props) => {
@@ -26,7 +27,8 @@ export const Filters: FC<Props> = (props) => {
     clearAllFilters,
     categories,
     selectedCategoriesIds,
-    setSelectedCategoriesIds,
+    toggleSelectCategory,
+    clearSelectedCategories,
   } = props;
 
   return (
@@ -49,7 +51,8 @@ export const Filters: FC<Props> = (props) => {
           <CategoryFilter
             categories={categories}
             selectedCategoriesIds={selectedCategoriesIds}
-            setSelectedCategoriesIds={setSelectedCategoriesIds}
+            toggleSelectCategory={toggleSelectCategory}
+            clearSelectedCategories={clearSelectedCategories}
           />
 
           <div className="panel-block">

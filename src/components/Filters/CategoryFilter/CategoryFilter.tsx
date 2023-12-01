@@ -5,34 +5,17 @@ import { Category } from '../../../types';
 interface Props {
   categories: Category[];
   selectedCategoriesIds: number[];
-  setSelectedCategoriesIds: (ids: number[]) => void;
+  toggleSelectCategory: (id: number) => void;
+  clearSelectedCategories: () => void;
 }
 
 export const CategoryFilter: FC<Props> = (props) => {
   const {
     categories,
     selectedCategoriesIds,
-    setSelectedCategoriesIds,
+    toggleSelectCategory,
+    clearSelectedCategories,
   } = props;
-
-  const toggleSelect = (categoryId: number) => {
-    const isExist = selectedCategoriesIds.includes(categoryId);
-
-    if (isExist) {
-      setSelectedCategoriesIds(
-        selectedCategoriesIds.filter(id => id !== categoryId),
-      );
-
-      return;
-    }
-
-    setSelectedCategoriesIds([
-      ...selectedCategoriesIds,
-      categoryId,
-    ]);
-  };
-
-  // is-info
 
   return (
     <div className="panel-block is-flex-wrap-wrap">
@@ -42,7 +25,7 @@ export const CategoryFilter: FC<Props> = (props) => {
         className={cn('button is-success mr-6', {
           'is-outlined': selectedCategoriesIds.length !== 0,
         })}
-        onClick={() => setSelectedCategoriesIds([])}
+        onClick={clearSelectedCategories}
       >
         All
       </a>
@@ -55,7 +38,7 @@ export const CategoryFilter: FC<Props> = (props) => {
           })}
           href="#/"
           key={category.id}
-          onClick={() => toggleSelect(category.id)}
+          onClick={() => toggleSelectCategory(category.id)}
         >
           {category.title}
         </a>
