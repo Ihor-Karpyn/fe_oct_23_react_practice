@@ -7,9 +7,10 @@
   "license": "GPL-3.0",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.2",
+    "@googlemaps/js-api-loader": "^1.16.2",
     "bulma": "^0.9.4",
-    "postcss": "^8.4.18",
     "classnames": "^2.3.1",
+    "postcss": "^8.4.18",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^4.0.3"
@@ -62,7 +63,7 @@
   },
   "mateAcademy": {
     "_comment": "Replace 'reactTypescript' with 'react' if you want use React without Typescript",
-    "projectType": "react",
+    "projectType": "reactTypescript",
     "tests": {
       "_comment": "Add `cypressComponents: true` to enable component tests",
       "cypress": true

@@ -1,7 +1,14 @@
-import React from 'react';
+import { FC } from 'react';
 import cn from 'classnames';
+import { User } from '../../../types';
 
-export const UserFilter = (props) => {
+interface Props {
+  users: User[];
+  selectUserId: (id: number | null) => void;
+  selectedUserId: number | null;
+}
+
+export const UserFilter: FC<Props> = (props) => {
   const { users, selectUserId, selectedUserId } = props;
 
   return (

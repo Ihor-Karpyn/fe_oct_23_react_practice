@@ -1,4 +1,6 @@
-export default [
+import { Product } from '../types';
+
+export const productsFromServer: Product[] = [
   {
     id: 1,
     name: 'Milk',

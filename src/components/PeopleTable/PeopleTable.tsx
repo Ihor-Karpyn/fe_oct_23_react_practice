@@ -1,8 +1,16 @@
-import React from 'react';
+import { FC } from 'react';
 import { PeopleTableHead } from './Head/PeopleTableHead';
 import { PeopleTableBody } from './Body/PeopleTableBody';
+import { ProductFull, SortFields } from '../../types';
 
-export const PeopleTable = (props) => {
+interface Props {
+  products: ProductFull[];
+  sortColumn: SortFields | null;
+  setSortColumn: (field: SortFields | null) => void;
+  isReverse: boolean;
+}
+
+export const PeopleTable: FC<Props> = (props) => {
   const {
     products,
     setSortColumn,

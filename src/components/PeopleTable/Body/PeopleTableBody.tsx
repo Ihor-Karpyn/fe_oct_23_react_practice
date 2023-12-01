@@ -1,7 +1,12 @@
-import React from 'react';
 import cn from 'classnames';
+import { FC } from 'react';
+import { ProductFull } from '../../../types';
 
-export const PeopleTableBody = (props) => {
+interface Props {
+  products: ProductFull[];
+}
+
+export const PeopleTableBody: FC<Props> = (props) => {
   const { products } = props;
 
   return (
@@ -16,17 +21,17 @@ export const PeopleTableBody = (props) => {
             {product.name}
           </td>
           <td data-cy="ProductCategory">
-            {`${product.category.icon} - ${product.category.title}`}
+            {`${product.category?.icon} - ${product.category?.title}`}
           </td>
 
           <td
             data-cy="ProductUser"
             className={cn(
               'has-text-link',
-              { 'has-text-danger': product.user.sex === 'f' },
+              { 'has-text-danger': product.user?.sex === 'f' },
             )}
           >
-            {product.user.name}
+            {product.user?.name}
           </td>
         </tr>
       ))}

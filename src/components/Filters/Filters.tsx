@@ -1,9 +1,22 @@
-import React from 'react';
+import { FC } from 'react';
 import { UserFilter } from './UserFilter/UserFilter';
 import { SearchFilter } from './Search/SearchFilter';
 import { CategoryFilter } from './CategoryFilter/CategoryFilter';
+import { Category, User } from '../../types';
 
-export const Filters = (props) => {
+interface Props {
+  users: User[];
+  selectUserId: (id: number | null) => void;
+  selectedUserId: number | null;
+  searchQuery: string;
+  setSearchQuery: (v: string) => void;
+  clearAllFilters: () => void;
+  categories: Category[];
+  selectedCategoriesIds: number[];
+  setSelectedCategoriesIds: (ids: number[]) => void;
+}
+
+export const Filters: FC<Props> = (props) => {
   const {
     users,
     selectUserId,

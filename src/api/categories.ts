@@ -1,4 +1,6 @@
-export default [
+import { Category } from '../types';
+
+export const categoriesFromServer: Category[] = [
   {
     id: 1,
     title: 'Grocery',

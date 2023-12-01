@@ -1,14 +1,21 @@
-import React from 'react';
+import { FC } from 'react';
 import cn from 'classnames';
+import { SortFields } from '../../../types';
 
 const COLUMNS = [
-  { id: 1, title: 'ID', columnCode: 'id' },
-  { id: 2, title: 'Product', columnCode: 'product' },
-  { id: 3, title: 'Category', columnCode: 'category' },
-  { id: 4, title: 'User', columnCode: 'user' },
+  { id: 1, title: 'ID', columnCode: SortFields.Id },
+  { id: 2, title: 'Product', columnCode: SortFields.Product },
+  { id: 3, title: 'Category', columnCode: SortFields.Category },
+  { id: 4, title: 'User', columnCode: SortFields.User },
 ];
 
-export const PeopleTableHead = (props) => {
+interface Props {
+  sortColumn: SortFields | null;
+  setSortColumn: (field: SortFields | null) => void;
+  isReverse: boolean;
+}
+
+export const PeopleTableHead: FC<Props> = (props) => {
   const {
     isReverse,
     setSortColumn,

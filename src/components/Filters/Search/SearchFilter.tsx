@@ -1,6 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
-export const SearchFilter = (props) => {
+interface Props {
+  searchQuery: string;
+  setSearchQuery: (v: string) => void;
+}
+
+export const SearchFilter: FC<Props> = (props) => {
   const {
     searchQuery,
     setSearchQuery,

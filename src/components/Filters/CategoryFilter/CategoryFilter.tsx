@@ -1,14 +1,21 @@
-import React from 'react';
 import cn from 'classnames';
+import { FC } from 'react';
+import { Category } from '../../../types';
 
-export const CategoryFilter = (props) => {
+interface Props {
+  categories: Category[];
+  selectedCategoriesIds: number[];
+  setSelectedCategoriesIds: (ids: number[]) => void;
+}
+
+export const CategoryFilter: FC<Props> = (props) => {
   const {
     categories,
     selectedCategoriesIds,
     setSelectedCategoriesIds,
   } = props;
 
-  const toggleSelect = (categoryId) => {
+  const toggleSelect = (categoryId: number) => {
     const isExist = selectedCategoriesIds.includes(categoryId);
 
     if (isExist) {
