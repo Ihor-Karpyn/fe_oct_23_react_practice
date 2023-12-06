@@ -3,7 +3,7 @@ import { colorsFromServer, goodsFromServer } from './api/data';
 import { getGoodsWithColors, getNewId } from './helpers';
 import './App.scss';
 import { GoodsList } from './Components/GoodsList';
-import { AddGoodForm } from './Components/AddGoodForm';
+import { GoodForm } from './Components/GoodForm';
 import { Good } from './types';
 
 export const App: FC = () => {
@@ -11,6 +11,21 @@ export const App: FC = () => {
   const [goods, setGoods] = useState(goodsFromServer);
 
   const goodsWithColors = getGoodsWithColors(goods, colors);
+
+  const editGood = (goodToEdit: Good) => {
+    setGoods(
+      currentGoods => currentGoods.map(good => (good.id !== goodToEdit.id
+        ? good
+        : goodToEdit
+      )),
+    );
+  };
+
+  const removeGood = (goodId: number) => {
+    setGoods(
+      currentGoods => currentGoods.filter(good => good.id !== goodId),
+    );
+  };
 
   const addGood = (
     goodName: string,
@@ -35,9 +50,18 @@ export const App: FC = () => {
       <h1 className="appTitle">Goods list</h1>
 
       <div className="appContainer">
-        <GoodsList goods={goodsWithColors} />
+        <GoodsList
+          goods={goodsWithColors}
+          removeGood={removeGood}
+          colors={colors}
+          editGood={editGood}
+        />
 
-        <AddGoodForm colors={colors} addGood={addGood} />
+        <GoodForm
+          colors={colors}
+          onSubmit={addGood}
+          submitButtonText="Add good"
+        />
       </div>
     </>
   );

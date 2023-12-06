@@ -5,14 +5,23 @@ import { Color } from '../types';
 
 interface Props {
   colors: Color[];
-  addGood: (goodName: string, colorId: number) => void;
+  onSubmit: (goodName: string, colorId: number) => void;
+  submitButtonText?: string;
+  initialGoodName?: string;
+  initialColorId?: number;
 }
 
-export const AddGoodForm: FC<Props> = (props) => {
-  const { colors, addGood } = props;
+export const GoodForm: FC<Props> = (props) => {
+  const {
+    colors,
+    onSubmit,
+    submitButtonText = 'Save',
+    initialGoodName = '',
+    initialColorId = 0,
+  } = props;
 
-  const [goodName, setGoodName] = useState('');
-  const [selectColorId, setSelectedColorId] = useState(0);
+  const [goodName, setGoodName] = useState(initialGoodName);
+  const [selectColorId, setSelectedColorId] = useState(initialColorId);
 
   const [isNameError, setIsNameError] = useState(false);
   const [isColorError, setIsColorError] = useState(false);
@@ -22,7 +31,7 @@ export const AddGoodForm: FC<Props> = (props) => {
     setSelectedColorId(0);
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsNameError(!goodName);
@@ -32,15 +41,14 @@ export const AddGoodForm: FC<Props> = (props) => {
       return;
     }
 
-    addGood(goodName, selectColorId);
-    addGood(goodName, selectColorId);
-    addGood(goodName, selectColorId);
+    onSubmit(goodName, selectColorId);
+
     clearForm();
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1 className="mb-16">AddGoodForm</h1>
+    <form onSubmit={submitHandler}>
+      <h1 className="mb-16">Good Form</h1>
 
       <div className="mb-16">
         <input
@@ -79,7 +87,7 @@ export const AddGoodForm: FC<Props> = (props) => {
         </select>
       </div>
 
-      <button type="submit">Add good</button>
+      <button type="submit">{submitButtonText}</button>
 
       <hr />
     </form>
