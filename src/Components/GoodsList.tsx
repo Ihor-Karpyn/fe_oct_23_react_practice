@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, memo, useRef, useState } from 'react';
 import { Color, GoodWithColor, Good as GoodType } from '../types';
 import { Good } from './Good';
 import { GoodForm } from './GoodForm';
@@ -10,7 +10,7 @@ interface Props {
   editGood: (goodToEdit: GoodType) => void;
 }
 
-export const GoodsList: FC<Props> = (props) => {
+export const GoodsList: FC<Props> = memo((props) => {
   const {
     goods,
     removeGood,
@@ -58,4 +58,4 @@ export const GoodsList: FC<Props> = (props) => {
       ))}
     </div>
   );
-};
+});

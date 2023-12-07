@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { colorsFromServer, goodsFromServer } from './api/data';
 import { getGoodsWithColors, getNewId } from './helpers';
 import './App.scss';
@@ -9,23 +9,34 @@ import { Good } from './types';
 export const App: FC = () => {
   const [colors, setColors] = useState(colorsFromServer);
   const [goods, setGoods] = useState(goodsFromServer);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [counter, setCounter] = useState(0);
 
-  const goodsWithColors = getGoodsWithColors(goods, colors);
+  const goodsWithColors = useMemo(
+    () => getGoodsWithColors(goods, colors),
+    [colors, goods],
+  );
 
-  const editGood = (goodToEdit: Good) => {
-    setGoods(
-      currentGoods => currentGoods.map(good => (good.id !== goodToEdit.id
-        ? good
-        : goodToEdit
-      )),
-    );
-  };
+  const editGood = useCallback(
+    (goodToEdit: Good) => {
+      setGoods(
+        currentGoods => currentGoods.map(good => (good.id !== goodToEdit.id
+          ? good
+          : goodToEdit
+        )),
+      );
+    },
+    [],
+  );
 
-  const removeGood = (goodId: number) => {
-    setGoods(
-      currentGoods => currentGoods.filter(good => good.id !== goodId),
-    );
-  };
+  const removeGood = useCallback(
+    (goodId: number) => {
+      setGoods(
+        currentGoods => currentGoods.filter(good => good.id !== goodId),
+      );
+    },
+    [],
+  );
 
   const addGood = (
     goodName: string,
@@ -45,13 +56,44 @@ export const App: FC = () => {
     });
   };
 
+  const goodsToRender = useMemo(
+    () => goodsWithColors.filter(
+      good => good.name.includes(searchQuery),
+    ),
+    [goodsWithColors, searchQuery],
+  );
+
   return (
     <>
       <h1 className="appTitle">Goods list</h1>
 
+      <input
+        type="search"
+        placeholder="Search"
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
+      />
+
+      <div>
+        <h2>Counter</h2>
+        <button
+          type="button"
+          onClick={() => setCounter(prev => prev + 1)}
+        >
+          {counter}
+        </button>
+      </div>
+
       <div className="appContainer">
         <GoodsList
-          goods={goodsWithColors}
+          goods={goodsToRender}
+          removeGood={removeGood}
+          colors={colors}
+          editGood={editGood}
+        />
+
+        <GoodsList
+          goods={goodsToRender}
           removeGood={removeGood}
           colors={colors}
           editGood={editGood}
