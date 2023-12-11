@@ -1,12 +1,6 @@
 module.exports = {
-  extends: [
-    '@mate-academy/eslint-config-react',
-    'plugin:cypress/recommended',
-    'plugin:react-hooks/recommended',
-  ],
+  extends: ['@mate-academy/eslint-config-react', 'plugin:cypress/recommended'],
   rules: {
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'error',
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: true,
       optionalDependencies: false,

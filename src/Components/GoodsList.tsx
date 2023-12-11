@@ -2,21 +2,15 @@ import React, { FC, memo, useRef, useState } from 'react';
 import { Color, GoodWithColor, Good as GoodType } from '../types';
 import { Good } from './Good';
 import { GoodForm } from './GoodForm';
+import { useAppContext } from '../Context/AppContext';
 
-interface Props {
-  goods: GoodWithColor[];
-  removeGood: (goodId: number) => void;
-  colors: Color[];
-  editGood: (goodToEdit: GoodType) => void;
-}
-
-export const GoodsList: FC<Props> = memo((props) => {
+export const GoodsList: FC = memo((props) => {
   const {
-    goods,
-    removeGood,
-    colors,
     editGood,
-  } = props;
+    colors,
+    removeGood,
+    goodsToRender,
+  } = useAppContext();
 
   const [selectedGoodId, setSelectedGoodId] = useState<number | null>(null);
 
@@ -37,7 +31,7 @@ export const GoodsList: FC<Props> = memo((props) => {
 
   return (
     <div className="GoodList">
-      {goods.map(good => (good.id === selectedGoodId
+      {goodsToRender.map(good => (good.id === selectedGoodId
         ? (
           <GoodForm
             key={good.id}
