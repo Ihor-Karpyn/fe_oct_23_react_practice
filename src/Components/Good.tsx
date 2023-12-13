@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { GoodWithColor } from '../types';
+import { ColorModal } from './ColorModal';
 
 interface Props {
   good: GoodWithColor;
@@ -8,6 +9,10 @@ interface Props {
 }
 
 export const Good: FC<Props> = (props) => {
+  const [selectedColorId, setSelectedColorId] = useState<
+    number | null
+  >(null);
+
   const {
     good,
     onEdit,
@@ -26,6 +31,20 @@ export const Good: FC<Props> = (props) => {
       >
         {good.name}
       </p>
+
+      <button
+        type="button"
+        onClick={() => setSelectedColorId(good.colorId)}
+      >
+        check color
+      </button>
+
+      {selectedColorId && (
+        <ColorModal
+          colorId={selectedColorId}
+          close={() => setSelectedColorId(null)}
+        />
+      )}
 
       <button
         type="button"

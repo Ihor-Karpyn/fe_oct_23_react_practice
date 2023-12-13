@@ -1,16 +1,40 @@
-import { FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { colorsFromServer, goodsFromServer } from './api/data';
 import { getGoodsWithColors, getNewId } from './helpers';
 import './App.scss';
 import { GoodsList } from './Components/GoodsList';
 import { GoodForm } from './Components/GoodForm';
-import { Good } from './types';
+import { Color, Good } from './types';
+import { getColors, getGoods } from './api/api';
 
 export const App: FC = () => {
-  const [colors, setColors] = useState(colorsFromServer);
-  const [goods, setGoods] = useState(goodsFromServer);
+  const [colors, setColors] = useState<Color[]>([]);
+  const [goods, setGoods] = useState<Good[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [counter, setCounter] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isDataReady = !isLoading && !errorMessage;
+
+  console.log(goods);
+
+  useEffect(
+    () => {
+      setIsLoading(true);
+
+      Promise.all([getGoods(), getColors()])
+        .then((dataFromServer) => {
+          const [goodsFS, colorsFS] = dataFromServer;
+
+          setGoods(goodsFS);
+          setColors(colorsFS);
+        })
+        .catch(error => setErrorMessage(error.message))
+        .finally(() => setIsLoading(false));
+    },
+    [],
+  );
 
   const goodsWithColors = useMemo(
     () => getGoodsWithColors(goods, colors),
@@ -67,6 +91,15 @@ export const App: FC = () => {
     <>
       <h1 className="appTitle">Goods list</h1>
 
+      <button
+        type="button"
+        onClick={() => {
+          getColors().catch(er => console.log(er));
+        }}
+      >
+        dsgdfgdfg
+      </button>
+
       <input
         type="search"
         placeholder="Search"
@@ -85,19 +118,22 @@ export const App: FC = () => {
       </div>
 
       <div className="appContainer">
-        <GoodsList
-          goods={goodsToRender}
-          removeGood={removeGood}
-          colors={colors}
-          editGood={editGood}
-        />
+        {isLoading && (
+          <h1>Loading...</h1>
+        )}
 
-        <GoodsList
-          goods={goodsToRender}
-          removeGood={removeGood}
-          colors={colors}
-          editGood={editGood}
-        />
+        {errorMessage && (
+          <p style={{ color: 'red' }}>{errorMessage}</p>
+        )}
+
+        {isDataReady && (
+          <GoodsList
+            goods={goodsToRender}
+            removeGood={removeGood}
+            colors={colors}
+            editGood={editGood}
+          />
+        )}
 
         <GoodForm
           colors={colors}
