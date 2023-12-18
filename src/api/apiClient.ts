@@ -1,23 +1,70 @@
-const BASE_ENDPOINT = 'https://65796c1df08799dc8046e695.mockapi.io';
+const BASE_ENDPOINT = 'http://localhost:5000';
 
 export const gateway = <T>(
   baseEndpoint: string,
   endpoint: string,
-): Promise<T> => (
-    fetch(`${BASE_ENDPOINT}${endpoint}`)
-      .then((response) => {
-        console.log('---###--------------------###---');
-        console.log(response);
-        console.log('---###--------------------###---');
+  options?: {
+    headers?: Record<string, string>,
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
+    body?: any,
+  },
+): Promise<T> => {
+  const url = `${BASE_ENDPOINT}${endpoint}`;
 
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
+  const {
+    headers,
+    method = 'GET',
+    body,
+  } = options || {};
 
+  return fetch(
+    url,
+    {
+      ...options,
+      method,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+      ...(body && {
+        body: JSON.stringify(body),
+      }),
+    },
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+
+      const contentType = response.headers.get('content-type');
+
+      if (contentType && contentType.includes('application/json')) {
         return response.json();
-      })
-  );
+      }
 
-export const get = <T>(endpoint: string) => (
+      return null;
+    });
+};
+
+const get = <T>(endpoint: string) => (
   gateway<T>(BASE_ENDPOINT, endpoint)
 );
+
+const remove = <T>(endpoint: string) => (
+  gateway<T>(BASE_ENDPOINT, endpoint, { method: 'DELETE' })
+);
+
+const post = <T>(endpoint: string, body: any) => (
+  gateway<T>(BASE_ENDPOINT, endpoint, { method: 'POST', body })
+);
+
+const patch = <T>(endpoint: string, body: any) => (
+  gateway<T>(BASE_ENDPOINT, endpoint, { method: 'PATCH', body })
+);
+
+export const apiClient = {
+  get,
+  delete: remove,
+  post,
+  patch,
+};

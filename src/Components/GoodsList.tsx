@@ -5,9 +5,9 @@ import { GoodForm } from './GoodForm';
 
 interface Props {
   goods: GoodWithColor[];
-  removeGood: (goodId: number) => void;
+  removeGood: (goodId: number) => Promise<void>;
   colors: Color[];
-  editGood: (goodToEdit: GoodType) => void;
+  editGood: (goodToEdit: GoodType) => Promise<number>;
 }
 
 export const GoodsList: FC<Props> = memo((props) => {
@@ -20,7 +20,7 @@ export const GoodsList: FC<Props> = memo((props) => {
 
   const [selectedGoodId, setSelectedGoodId] = useState<number | null>(null);
 
-  const editHandler = (goodName: string, colorId: number) => {
+  const editHandler = async(goodName: string, colorId: number) => {
     if (!selectedGoodId) {
       return;
     }
@@ -31,8 +31,13 @@ export const GoodsList: FC<Props> = memo((props) => {
       colorId,
     };
 
-    setSelectedGoodId(null);
-    editGood(good);
+    try {
+      await editGood(good);
+
+      setSelectedGoodId(null);
+    } catch (error: any) {
+      window.alert(`Smth went wrong ${error.message}`);
+    }
   };
 
   return (

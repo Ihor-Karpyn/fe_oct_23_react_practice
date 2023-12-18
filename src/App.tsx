@@ -5,7 +5,14 @@ import './App.scss';
 import { GoodsList } from './Components/GoodsList';
 import { GoodForm } from './Components/GoodForm';
 import { Color, Good } from './types';
-import { getColors, getGoods } from './api/api';
+import {
+  createGood,
+  deleteGood,
+  getColors,
+  getGoods,
+  goodApiClient
+} from './api/api';
+import { isUndefined } from 'util';
 
 export const App: FC = () => {
   const [colors, setColors] = useState<Color[]>([]);
@@ -42,11 +49,15 @@ export const App: FC = () => {
   );
 
   const editGood = useCallback(
-    (goodToEdit: Good) => {
+    async (goodToEdit: Good) => {
+      const {id, ...fieldsToUpdate} = goodToEdit;
+
+      const editedGood = await goodApiClient.updateGood(id, fieldsToUpdate);
+
       setGoods(
         currentGoods => currentGoods.map(good => (good.id !== goodToEdit.id
-          ? good
-          : goodToEdit
+            ? good
+            : editedGood
         )),
       );
     },
@@ -54,31 +65,43 @@ export const App: FC = () => {
   );
 
   const removeGood = useCallback(
-    (goodId: number) => {
-      setGoods(
-        currentGoods => currentGoods.filter(good => good.id !== goodId),
-      );
+    async(goodId: number) => {
+      try {
+        await deleteGood(goodId);
+
+        setGoods(
+          currentGoods => currentGoods.filter(good => good.id !== goodId),
+        );
+      } catch (error: any) {
+        window.alert(`Smth went wrong, ${error?.message}`);
+      }
     },
     [],
   );
 
-  const addGood = (
-    goodName: string,
-    colorId: number,
-  ) => {
-    setGoods((currentGoods) => {
-      const newGood: Good = {
-        id: getNewId(currentGoods),
-        name: goodName,
-        colorId,
-      };
+  const addGood = useCallback(
+    async (
+      goodName: string,
+      colorId: number,
+    ) => {
+      try {
+        const newGood = await createGood({
+          name: goodName,
+          colorId,
+        });
 
-      return [
-        ...currentGoods,
-        newGood,
-      ];
-    });
-  };
+        setGoods((currentGoods) => {
+          return [
+            ...currentGoods,
+            newGood,
+          ];
+        });
+      } catch (error: any) {
+        window.alert(`Smth went wrong ${error.message}`)
+      }
+    },
+    []
+  );
 
   const goodsToRender = useMemo(
     () => goodsWithColors.filter(

@@ -5,7 +5,7 @@ import { Color } from '../types';
 
 interface Props {
   colors: Color[];
-  onSubmit: (goodName: string, colorId: number) => void;
+  onSubmit: (goodName: string, colorId: number) => Promise<void>;
   submitButtonText?: string;
   initialGoodName?: string;
   initialColorId?: number;
@@ -26,12 +26,14 @@ export const GoodForm: FC<Props> = (props) => {
   const [isNameError, setIsNameError] = useState(false);
   const [isColorError, setIsColorError] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const clearForm = () => {
     setGoodName('');
     setSelectedColorId(0);
   };
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitHandler = async(event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsNameError(!goodName);
@@ -41,9 +43,12 @@ export const GoodForm: FC<Props> = (props) => {
       return;
     }
 
-    onSubmit(goodName, selectColorId);
+    setIsLoading(true);
+
+    await onSubmit(goodName, selectColorId);
 
     clearForm();
+    setIsLoading(false);
   };
 
   return (
@@ -62,6 +67,7 @@ export const GoodForm: FC<Props> = (props) => {
             setGoodName(event.target.value);
             setIsNameError(false);
           }}
+          disabled={isLoading}
         />
 
         <select
@@ -73,6 +79,7 @@ export const GoodForm: FC<Props> = (props) => {
             setSelectedColorId(+event.target.value);
             setIsColorError(false);
           }}
+          disabled={isLoading}
         >
           <option value={0} disabled>Select color</option>
 
@@ -87,7 +94,12 @@ export const GoodForm: FC<Props> = (props) => {
         </select>
       </div>
 
-      <button type="submit">{submitButtonText}</button>
+      <button
+        type="submit"
+        disabled={isLoading}
+      >
+        {`${submitButtonText} ${isLoading ? '...' : ''}`}
+      </button>
 
       <hr />
     </form>

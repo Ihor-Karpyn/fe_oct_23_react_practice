@@ -5,7 +5,7 @@ import { ColorModal } from './ColorModal';
 interface Props {
   good: GoodWithColor;
   onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number) => Promise<void>;
 }
 
 export const Good: FC<Props> = (props) => {
@@ -13,11 +13,21 @@ export const Good: FC<Props> = (props) => {
     number | null
   >(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     good,
     onEdit,
     onDelete,
   } = props;
+
+  const deleteHandler = async() => {
+    setIsLoading(true);
+
+    await onDelete(good.id);
+
+    setIsLoading(false);
+  };
 
   return (
     <article
@@ -35,6 +45,7 @@ export const Good: FC<Props> = (props) => {
       <button
         type="button"
         onClick={() => setSelectedColorId(good.colorId)}
+        disabled={isLoading}
       >
         check color
       </button>
@@ -49,13 +60,15 @@ export const Good: FC<Props> = (props) => {
       <button
         type="button"
         onClick={() => onEdit(good.id)}
+        disabled={isLoading}
       >
         Edit
       </button>
 
       <button
         type="button"
-        onClick={() => onDelete(good.id)}
+        onClick={() => deleteHandler()}
+        disabled={isLoading}
       >
         X
       </button>
