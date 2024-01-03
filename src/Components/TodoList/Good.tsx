@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
-import { GoodWithColor } from '../types';
+import { Link } from 'react-router-dom';
+import { GoodWithColor } from '../../types';
 import { ColorModal } from './ColorModal';
 
 interface Props {
@@ -72,6 +73,7 @@ export const Good: FC<Props> = (props) => {
       >
         X
       </button>
+      <Link to={`/todos/${good.id}`}>Details</Link>
     </article>
   );
 };

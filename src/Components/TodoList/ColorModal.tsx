@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Color } from '../types';
-import { getColorById } from '../api/api';
+import { Color } from '../../types';
+import { getColorById } from '../../api/api';
 
 interface Props {
   colorId: number;

@@ -1,5 +1,5 @@
 import React, { FC, memo, useRef, useState } from 'react';
-import { Color, GoodWithColor, Good as GoodType } from '../types';
+import { Color, GoodWithColor, Good as GoodType } from '../../types';
 import { Good } from './Good';
 import { GoodForm } from './GoodForm';
 

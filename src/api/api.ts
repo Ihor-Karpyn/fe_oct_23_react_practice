@@ -12,6 +12,10 @@ export const getGoods = (): Promise<Good[]> => (
   apiClient.get<Good[]>('/goods')
 );
 
+export const getGoodById = (id: number): Promise<Good> => (
+  apiClient.get<Good>(`/goods/${id}`)
+);
+
 export const getColors = (): Promise<Color[]> => (
   apiClient.get<Color[]>('/colors')
 );

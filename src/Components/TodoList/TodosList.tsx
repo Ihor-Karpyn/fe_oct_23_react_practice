@@ -1,20 +1,19 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { colorsFromServer, goodsFromServer } from './api/data';
-import { getGoodsWithColors, getNewId } from './helpers';
-import './App.scss';
-import { GoodsList } from './Components/GoodsList';
-import { GoodForm } from './Components/GoodForm';
-import { Color, Good } from './types';
+import { getGoodsWithColors } from '../../helpers';
+import '../../App.scss';
+import { GoodsList } from './GoodsList';
+import { GoodForm } from './GoodForm';
+import { Color, Good } from '../../types';
 import {
   createGood,
   deleteGood,
   getColors,
   getGoods,
   goodApiClient
-} from './api/api';
-import { isUndefined } from 'util';
+} from '../../api/api';
+import { Link } from 'react-router-dom';
 
-export const App: FC = () => {
+export const TodosList: FC = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [goods, setGoods] = useState<Good[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,7 +49,7 @@ export const App: FC = () => {
 
   const editGood = useCallback(
     async (goodToEdit: Good) => {
-      const {id, ...fieldsToUpdate} = goodToEdit;
+      const { id, ...fieldsToUpdate } = goodToEdit;
 
       const editedGood = await goodApiClient.updateGood(id, fieldsToUpdate);
 
@@ -60,12 +59,14 @@ export const App: FC = () => {
             : editedGood
         )),
       );
+
+      return 1;
     },
     [],
   );
 
   const removeGood = useCallback(
-    async(goodId: number) => {
+    async (goodId: number) => {
       try {
         await deleteGood(goodId);
 

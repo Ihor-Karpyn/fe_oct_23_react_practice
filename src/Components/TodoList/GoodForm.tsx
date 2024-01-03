@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { inspect } from 'util';
 import cn from 'classnames';
-import { Color } from '../types';
+import { Color } from '../../types';
 
 interface Props {
   colors: Color[];
